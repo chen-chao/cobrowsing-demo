@@ -5,6 +5,7 @@ const fs = require('fs');
 const http = require('http');
 const path = require('path');
 const url = require('url');
+const { v4: uuidv4 } = require('uuid');
 
 const WebSocketServer = require('ws').Server;
 const CDP = require('chrome-remote-interface');
@@ -88,7 +89,7 @@ function handleJoin(ws, data) {
     peers.set(ws, {
       socket: ws,
       role: params.role,
-      name: params.name,
+      name: uuidv4(),
       color: params.color || 'red',
     });
 
