@@ -113,7 +113,7 @@ function handleJoin(ws, data) {
 
 function handleCursor(ws, data) {
   var peer = peers.get(ws)
-  if (peer) {
+  if (peer && extension) {
     extension.send(JSON.stringify({
       method: 'cursor',
       params: {

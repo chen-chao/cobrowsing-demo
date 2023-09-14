@@ -4,40 +4,40 @@ const port = window.location.port;
 const syncServer = `ws://${host}:${port}`;
 const socket = new WebSocket(syncServer);
 
-document.addEventListener('click', (event) => {
-    var imageElement = document.getElementById("screencast");
-    var imageRect = imageElement.getBoundingClientRect();
-
-    socket.send(JSON.stringify({
-        method: 'click',
-        params: {
-            x: event.clientX,
-            y: event.clientY,
-            width: imageRect.width,
-            height: imageRect.height,
-        }}));
-});
-
-document.addEventListener('mousemove', (event) => {
-    var imageElement = document.getElementById("screencast");
-    var imageRect = imageElement.getBoundingClientRect();
-    socket.send(JSON.stringify({
-        method: 'cursor',
-        params: {
-            clientX: event.clientX,
-            clientY: event.clientY,
-            screenX: event.screenX,
-            screenY: event.screenY,
-            movementX: event.movementX,
-            movementY: event.movementY,
-            width: imageRect.width,
-            height: imageRect.height,
-        }}));
-});
-
 socket.onopen = () => {
     console.log('WebSocket connection opened.');
     sendJoin();
+
+    document.addEventListener('click', (event) => {
+        var imageElement = document.getElementById("screencast");
+        var imageRect = imageElement.getBoundingClientRect();
+    
+        socket.send(JSON.stringify({
+            method: 'click',
+            params: {
+                x: event.clientX,
+                y: event.clientY,
+                width: imageRect.width,
+                height: imageRect.height,
+            }}));
+    });
+    
+    document.addEventListener('mousemove', (event) => {
+        var imageElement = document.getElementById("screencast");
+        var imageRect = imageElement.getBoundingClientRect();
+        socket.send(JSON.stringify({
+            method: 'cursor',
+            params: {
+                clientX: event.clientX,
+                clientY: event.clientY,
+                screenX: event.screenX,
+                screenY: event.screenY,
+                movementX: event.movementX,
+                movementY: event.movementY,
+                width: imageRect.width,
+                height: imageRect.height,
+            }}));
+    });    
 };
 
 socket.onmessage = (event) => {

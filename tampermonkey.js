@@ -10,11 +10,10 @@
   const canvas = createCanvas();
   document.body.appendChild(canvas);
   ctx = canvas.getContext('2d');
-  
+
   canvas.addEventListener('click', (event) => {
     createFirework(event.clientX, event.clientY);
   });
-
 
   ws.onopen = () => {
     console.log("WebSocket connection opened.");
