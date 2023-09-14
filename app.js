@@ -115,8 +115,14 @@ function handleCursor(ws, data) {
       method: 'cursor',
       params: {
         name: peer.name,
-        x: data.params.x,
-        y: data.params.y,
+        clientX: data.params.clientX,
+        clientY: data.params.clientY,
+        screenX: data.params.screenX,
+        screenY: data.params.screenY,
+        movementX: data.params.movementX,
+        movementY: data.params.movementY,
+        width: imageRect.width, 
+        height: imageRect.height,        
         color: peer.color,
       }}));
   } else {
