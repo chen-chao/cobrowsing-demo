@@ -6,17 +6,12 @@ const http = require('http');
 const path = require('path');
 const url = require('url');
 
-const promisify = require('util').promisify;
-const WebSocket = require('ws');
 const WebSocketServer = require('ws').Server;
 const CDP = require('chrome-remote-interface');
-const { start } = require('repl');
 
 const requestedPort = 8090;
-const readFile = promisify(fs.readFile);
-const exists = promisify(fs.exists);
-
 const server = http.createServer(requestHandler);
+
 server.once('error', error => {
   if (process.send) {
     process.send('ERROR');
@@ -33,9 +28,10 @@ server.once('listening', () => {
   console.log(`Started hosted mode server at http://localhost:${actualPort}\n`);
 });
 
+server.listen(requestedPort);
+
 // const sessions = new Map();
 const wss = new WebSocketServer({server});
-
 
 let extension = undefined;
 let peers = new Map();
@@ -54,7 +50,9 @@ wss.on('connection', ws => {
       handleCursor(ws, data);
     } else if (data.method === 'click') {
       console.log(`click!`);
-      extension.send(JSON.stringify(data));
+      if (extension) {
+        extension.send(JSON.stringify(data));
+      }
     }
     else {
       handleUnknown(ws, data);
@@ -67,7 +65,6 @@ wss.on('connection', ws => {
   });
 });
   
-server.listen(requestedPort);
 startScreencast();
 
 // ws handlers
