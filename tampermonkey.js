@@ -66,10 +66,7 @@
   }
 
 function handleClick(data) {
-  var x = data.params.x;
-  var y = data.params.y;
-
-  createFirework(x, y);
+    // TODO
 }
 
   function handleUnknown(ws, data) {
