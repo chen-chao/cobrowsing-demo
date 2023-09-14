@@ -13,6 +13,9 @@ const CDP = require('chrome-remote-interface');
 const requestedPort = 8090;
 const server = http.createServer(requestHandler);
 
+let current_user_id = 0;
+const user_color_list = ['red', 'blue', 'green', 'yellow', 'black'];
+
 server.once('error', error => {
   if (process.send) {
     process.send('ERROR');
@@ -70,6 +73,9 @@ startScreencast();
 
 // ws handlers
 function handleJoin(ws, data) {
+  // const uid = uuidv4();
+  const uid = current_user_id;
+  current_user_id += 1;
   var params = data.params;
   if (params.role === 'extension') {
     console.log('extension joined')
@@ -91,7 +97,7 @@ function handleJoin(ws, data) {
     peers.set(ws, {
       socket: ws,
       role: params.role,
-      name: uuidv4(),
+      name: uid,
       color: params.color || 'red',
     });
 
@@ -104,8 +110,8 @@ function handleJoin(ws, data) {
       method: 'join',
       params: {
         role: params.role,
-        name: params.name,
-        color: params.color || 'red',
+        name: uid,
+        color: user_color_list[uid],
       }
     }));
   }

@@ -111,7 +111,7 @@
     wrapper.style.left = "100px";
     wrapper.style.top = "50px";
     wrapper.style.zIndex = "999";
-    wrapper.style.backgroundColor = "black";
+    wrapper.style.backgroundColor = data.color;
     wrapper.id = "cursor" + data.name;
     wrapper.appendChild(cursor);
     document.body.appendChild(wrapper);
