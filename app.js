@@ -122,8 +122,8 @@ function handleCursor(ws, data) {
         screenY: data.params.screenY,
         movementX: data.params.movementX,
         movementY: data.params.movementY,
-        width: imageRect.width, 
-        height: imageRect.height,        
+        width: data.params.width, 
+        height: data.params.height,        
         color: peer.color,
       }}));
   } else {
