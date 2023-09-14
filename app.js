@@ -38,7 +38,6 @@ const wss = new WebSocketServer({server});
 
 
 let extension = undefined;
-let remoteDebugginServer = undefined;
 let peers = new Map();
 
 wss.on('connection', ws => {
@@ -69,7 +68,7 @@ wss.on('connection', ws => {
 });
   
 server.listen(requestedPort);
-
+startScreencast();
 
 // ws handlers
 function handleJoin(ws, data) {
@@ -146,44 +145,10 @@ async function requestHandler(req, resp) {
 
   if (parsedUrl.pathname === "/discovery") {
     handleDiscovery(req, resp);
-  } else if (parsedUrl.pathname === "/connect") {
-    if (!remoteDebugginServer) {
-      // TODO: get page automatically, or from query
-      var page = "ws://127.0.0.1:9222/devtools/page/0EF4CE7CA393CA6052C7350AB1476278";
-
-      if (!page) {
-        resp.writeHead(404, { 'Content-Type': 'text/plain' });
-        resp.end(`Got connected! Please specify page to connect to`);
-        return;
-      }
-      
-      startScreencast();
-      // initRemoteDebuggingServer(page);
-    }
-
+  } else if (parsedUrl.pathname === "/connect") {     
     handleLocalFile(resp, "/page.html");
   } else {
     handleLocalFile(resp, parsedUrl.pathname)
-  }
-}
-
-function initRemoteDebuggingServer(page) {
-  remoteDebugginServer = new WebSocket(page);
-
-  remoteDebugginServer.onopen = () => {
-    console.log('RDP connection opened.');
-    startScreencast();
-  };
-
-  remoteDebugginServer.onclose = () => {
-    remoteDebugginServer = undefined;
-  };
-
-  remoteDebugginServer.onmessage = (event) => { 
-    // console.log(`Received from remote debugging server: ${event.data}`);
-    for (const [key, peer] of peers) {
-      peer.socket.send(event.data);
-    }
   }
 }
 
@@ -235,23 +200,6 @@ function handleDiscovery(req, resp) {
         resp.end();
     }
   });
-}
-
-function startScreencasNaive() {
-  remoteDebugginServer.send(JSON.stringify({
-      id: 1,
-      method: 'Page.enable',
-  }));
-
-  remoteDebugginServer.send(JSON.stringify({
-      id: 2,
-      method: 'Page.startScreencast',
-      params: {
-          format: 'jpeg',
-          quality: 80,
-          everyNthFrame: 1,
-      },        
-  }));
 }
 
 function handleLocalFile(resp, pathname) {
