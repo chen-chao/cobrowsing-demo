@@ -72,6 +72,7 @@ startScreencast();
 function handleJoin(ws, data) {
   var params = data.params;
   if (params.role === 'extension') {
+    console.log('extension joined')
     extension = ws;
     console.log(`extension connected`);
     for (const [key, peer] of peers)  {
@@ -86,6 +87,7 @@ function handleJoin(ws, data) {
     }
   }
   else {
+    console.log('peer joined')
     peers.set(ws, {
       socket: ws,
       role: params.role,
