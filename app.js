@@ -14,7 +14,7 @@ const requestedPort = 8090;
 const server = http.createServer(requestHandler);
 
 let current_user_id = 0;
-const user_color_list = ['red', 'blue', 'green', 'yellow', 'black'];
+const user_color_list = ['red', 'blue', 'green', 'yellow', 'black', 'purple', 'cyan'];
 
 server.once('error', error => {
   if (process.send) {
@@ -111,7 +111,7 @@ function handleJoin(ws, data) {
       params: {
         role: params.role,
         name: uid,
-        color: user_color_list[uid],
+        color: user_color_list[uid % user_color_list.length],
       }
     }));
   }
