@@ -24,18 +24,21 @@ socket.onopen = () => {
     
     document.addEventListener('mousemove', (event) => {
         var imageElement = document.getElementById("screencast");
-        var imageRect = imageElement.getBoundingClientRect();
+        var {x, y} = getAbsolutePosition(imageElement);
+
+        // if (event.clientX < x || event.clientX > x + imageElement.width || event.clientY < y || event.clientY > y + imageElement.height) {
+        //     return;
+        // }
+
         socket.send(JSON.stringify({
             method: 'cursor',
             params: {
-                clientX: event.clientX,
-                clientY: event.clientY,
+                clientX: event.clientX - x,
+                clientY: event.clientY - y,
                 screenX: event.screenX,
                 screenY: event.screenY,
                 movementX: event.movementX,
                 movementY: event.movementY,
-                width: imageRect.width,
-                height: imageRect.height,
             }}));
     });    
 };
@@ -67,22 +70,15 @@ function sendJoin() {
     }));
 }
 
-function sendCursor() {
-    socket.send(JSON.stringify({
-        method: 'cursor',
-        params: {
-            x: 10,
-            y: 10,
-        }
-    }));
-}
+function getAbsolutePosition(element) {
+    let x = 0;
+    let y = 0;
 
-function sendClick() {
-    socket.send(JSON.stringify({
-        method: 'click',
-        params: {
-            x: 10,
-            y: 10,
-        }
-    }));
+    while (element) {
+        x += element.offsetLeft - element.scrollLeft + element.clientLeft;
+        y += element.offsetTop - element.scrollTop + element.clientTop;
+        element = element.offsetParent;
+    }
+
+    return { x, y };
 }
